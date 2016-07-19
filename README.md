@@ -2,7 +2,7 @@
 
 Take a screenshot of an element on a page with [casperjs](http://casperjs.org/).
 
-This started as a way to take a screenshot of a [Leaflet](http://leafletjs.com/) map, but it's abstract enough to potentially work for other screenshotting needs..
+This started as a way to take a screenshot of a [Leaflet](http://leafletjs.com/) map, but it's abstract enough to potentially work for other screenshotting needs.
 
 ## Usage
 
