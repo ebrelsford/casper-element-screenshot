@@ -1,11 +1,7 @@
 #!/usr/bin/env casperjs
 
 var config = require('./config');
-var casper = require('casper').create({
-    exitOnError: false,
-    logLevel: (config.debug ? 'debug' : 'error'),
-    verbose: config.debug
-});
+var casperInit = require('casper');
 var includes = require('lodash.includes');
 var fs = require('fs');
 var qs = require('qs');
@@ -14,13 +10,20 @@ var urldecode = require('urldecode');
 var urlParse = require('url-parse');
 
 server.listen(config.ip + ':' + config.port, function (request, response) {
+    var casper = casperInit.create({
+        exitOnError: false,
+        logLevel: (config.debug ? 'debug' : 'error'),
+        verbose: config.debug
+    });
+
     var parsedQueryString = qs.parse(urlParse(request.url).query.slice(1)),
         element = urldecode(parsedQueryString.element),
         width = parseInt(parsedQueryString.width),
         height = parseInt(parsedQueryString.height),
         url = urldecode(parsedQueryString.url),
         selectorsToRemove = urldecode(parsedQueryString.remove).split(','),
-        imagePath = config.imageDir + new Date().toISOString().replace(/\D/g, '') + '.png',
+        filename = new Date().toISOString().replace(/\D/g, '') + '.png',
+        imagePath = config.imageDir + filename,
         parsedTargetUrl = urlParse(url);
 
     // Check hostname agains allowed target hosts
@@ -66,10 +69,14 @@ server.listen(config.ip + ':' + config.port, function (request, response) {
         var imageData = image.read();
         image.close();
 
-        // Send image as response
-        response.writeHead(200, {'Content-Type': 'image/png' });
-        response.setEncoding('binary');
-        response.write(imageData);
+        // Send image url as response
+        response.writeHead(200, {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json'
+        });
+        response.write(JSON.stringify({
+            url: config.imageBaseUrl + filename  
+        }));
         response.close();
     });
 });
