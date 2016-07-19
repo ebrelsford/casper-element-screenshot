@@ -1,6 +1,6 @@
 {
   "name": "casper-element-screenshot",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Take a screenshot of an element on a page with casperjs",
   "main": "index.js",
   "scripts": {
